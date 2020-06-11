@@ -1,28 +1,34 @@
-import { Component } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {COURSES} from '../db-data';
-import {Course} from './model/course'
+import {Course} from './model/course';
+import {CourseCardComponent} from './course-card/course-card.component';
+import {HighlightedDirective} from './directives/highlighted.directive';
+import {Observable} from 'rxjs';
+import {HttpClient, HttpParams} from '@angular/common/http';
+import {CoursesService} from './services/courses.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
-	courses = COURSES;
+  courses$ : Observable<Course[]>;
 
-	onCourseSelected(course:Course){
-		console.log("App Component - Course Card Clicked!", course);
-	}
+  courses;
 
-	title = COURSES[0].description
+  constructor(private coursesService: CoursesService) {
 
-	price = 9.992352322;
+  }
 
-	rate = 0.67 //not number and %
+  ngOnInit() {
 
-	course = COURSES[0]
+  	this.courses$ = this.coursesService.loadCourses();
+  }
 
-	startDate = new Date(2000, 0, 1); //Jan 1 2000
+  save(course:Course){
+  	this.coursesService.saveCourse(course);
+  }
 
 }
